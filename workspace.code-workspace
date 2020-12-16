@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../headphone_ranking/wp-content/plugins/headphone_ranker"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}

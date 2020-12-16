@@ -7,6 +7,7 @@
 function shopify_button_scripts($atts){
 ?>
 	<div id="product_div_placeholder" bb_added="true"></div>
+	<div id="product_div_placeholder2" style="display:none !important"></div>
 
 	<script type="text/javascript">
 	console.log(' Dual Product Script...');
@@ -49,33 +50,35 @@ function shopify_button_scripts($atts){
 	// Pixel add to cart
 
 
-	function add_letter_product(ui){
-
-		console.log('Adding letter product to cart...');
-		ui.createComponent('product', {
-				id: '<?= $atts["letter_product_id"] ?>',
-				cart: false,
-				toggles: false
-		});
-		console.log(ui);
-		let letter_product_index = 1;
-
-		for (i=0; i<ui.components.product.length; i++){
-			if(ui.components.product[i].id=="<?= $atts["letter_product_id"] ?>"){
-				letter_product_index = i;
-			}
-		}
-		
-		ui.components.cart[0].addVariantToCart(ui.components.product[letter_product_index].selectedVariant,1);
-
-		console.log('Letter product added to cart...');
-	}
+	
 
 	/*<![CDATA[*/  
 		/**
 		 * Ref:https://github.com/Shopify/buy-button-js/blob/master/docs/assets/scripts/addToCart.js
 		 * */
 	(function($) { // jQuery  
+		function add_letter_product(ui){
+
+			console.log('Adding letter product to cart...');
+			let letter_product_index = 999;
+			for (i=0; i<ui.components.cart[0].lineItemCache.length; i++){
+				if(ui.components.cart[0].lineItemCache[i].title=="Day One Edition - Dankeschön"){
+					letter_product_index = i;
+					break;
+				}
+			}
+			console.log('letter product index: '+letter_product_index);
+
+			if(letter_product_index==999){
+				setTimeout(function(){ 
+					$('#product_div_placeholder2 .shopify-buy__btn').unbind('click').trigger('click');
+				 }, 4000);
+				
+			}
+
+
+		}
+
 	  console.log("BEGIN: Shopify button related scripts by ChandimaJ");
 	  
 
@@ -88,6 +91,7 @@ function shopify_button_scripts($atts){
 		//---
 		domain: 'shop.overdeliver.gg',
 		storefrontAccessToken: '7cff65ea0f72ec3176241ebe7dbfa4a2',
+		
 
 		
 		// DIV Id (Placeholder id) for the product to be created in within the HTML of the page
@@ -386,6 +390,27 @@ $response = curl_exec($curl);
 			//toggles: [{node: document.getElementById('toggle_shopify_cart')}],
 			options: product_options,
 		});
+		
+		ui.createComponent('product', {
+				id: '<?= $atts["letter_product_id"] ?>',
+				cart: false,
+				toggles: false,
+				node: document.getElementById("product_div_placeholder2"),
+				options:{
+					product:{
+						iframe: false,
+						events : {
+					 	addVariantToCart: function (cart) {
+							$('.shopify-buy__cart-item__price').each(function(){
+								if($(this).text()=="€ 0.00 "){
+									$(this).addClass('xxx');
+								}
+							});
+					 	}
+					}
+				}
+				}
+			});
 		
 
 	}// End of load_shopify_button();
@@ -768,7 +793,7 @@ function shopify_cart_toggle_scripts($atts){
 	?>
 	<!-- BuyButton Placeholder Div -->	
 	<div id='toggle_shopify_cart' class="shopify-toggle_alone"></div>
-	<div id='toggle_shopify_cart_product' style="display:none !important; opacity: 0 !important; width:0; height:0;" class="shopify-toggle_alone"></div>
+	<a id="buybutton_checkout_url" href="#" style="display:none !important">Checkout</a>
 	
 	<!-- BuyButton Javascripts -->
 	<script src="https://sdks.shopifycdn.com/buy-button/1.0.0/buybutton.js"></script>
@@ -826,35 +851,6 @@ function shopify_cart_toggle_scripts($atts){
 				domain: 'shop.overdeliver.gg',
 				storefrontAccessToken: '7cff65ea0f72ec3176241ebe7dbfa4a2',
 		
-				
-				// DIV Id (Placeholder id) for the product to be created in within the HTML of the page
-				// Replace the id. if not the default will be used.
-				//product_div_id: 'product_div_placeholder',
-		
-				//--- Shopify Admin Connect to get product information
-				//---
-				//--- Get from shopify custom apps page. set permissions only to products with read only access
-		
-	
-	<?php //##########	PHP	###############
-				//---
-				//--- Product Related Configurations
-				//---
-				//$products_api_url = 'https://3afeff826ad07b1db6216996603e85e8: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@overdeliver-gmbh.myshopify.com/admin/api/2020-10/products';
-				//Ex: https://{client id}:{client secret}@overdeliver-gmbh.myshopify.com/admin/api/2020-10/products
-			
-				$product_id ='5751875076251'; //OVERDELIVER® - Flow State Booster
-				if (isset($atts['product_id'])){
-					$product_id = $atts['product_id'];
-				}
-		////##########	/PHP	###############
-	?>
-	
-				
-				//DO NOT CHANGE
-				//Updating Configs object from PHP variables
-				product_id:'<?= $product_id ?>', // Do not change
-				//day_one_purchased:false,
 			}
 
 		load_shopify_buttonx(configs);
@@ -924,7 +920,7 @@ function shopify_cart_toggle_scripts($atts){
 		
 		var lineItemTemplates = {
 		  image: '  <div class="{{data.classes.lineItem.image}}" style="background-image: url({{data.lineItemImage}})" data-element="lineItem.image" test="tester"></div>',
-		  variantTitle: '<div class="{{data.classes.lineItem.variantTitle}}" data-element="lineItem.variantTitle">{{data.variantTitle}}</div>',
+		  variantTitle: '<div class=" {{data.classes.lineItem.variantTitle}}" data-element="lineItem.variantTitle">{{data.variantTitle}}<span style="color:transparent; opacity:0 !important;">|</span></div>',
 		
 		  title: '<div class="close_lineitemx">&times;</div> <span class="{{data.classes.lineItem.itemTitle}}" data-element="lineItem.itemTitle">{{data.title}}</span>',
 		  price: '<span class="{{data.classes.lineItem.price}}" data-element="lineItem.price">{{data.formattedPrice}}</span>',
@@ -1005,7 +1001,7 @@ function shopify_cart_toggle_scripts($atts){
 						console.log('line_item: '+line_item);
 						console.log('current_qty: '+current_qty);
 						
-						if(line_item=='Standard Edition' ){
+						if(line_item=='Standard Edition|' ){
 							let standard_id = 2;
 							let standard_ones = 0;
 							let line_items = ui.components.cart[0].lineItemCache.length;
@@ -1025,7 +1021,7 @@ function shopify_cart_toggle_scripts($atts){
 							ui.components.cart[0].updateItem(ui.components.cart[0].lineItemCache[standard_id].id, ui.components.cart[0].lineItemCache[standard_id].quantity);
 							$(target.parentElement.parentElement.parentElement).find('.lineitm_val').val(new_qty);
 
-						}else if(line_item=='Day One Edition'){
+						}else if(line_item=='Day One Edition|'){
 							event.preventDefault();
 							event.stopPropagation();
 							$(target.parentElement.parentElement).find('.qtyblurbtn').css('pointer-events','none');
@@ -1046,7 +1042,7 @@ function shopify_cart_toggle_scripts($atts){
 						console.log(line_item);
 						console.log(current_qty);
 						
-						if(line_item=='Standard Edition'){
+						if(line_item=='Standard Edition|'){
 							let standard_id = 2;
 							let standard_ones = 0;
 							let line_items = ui.components.cart[0].lineItemCache.length;
@@ -1075,7 +1071,7 @@ function shopify_cart_toggle_scripts($atts){
 							}
 
 
-						}else if(line_item=='Day One Edition'){
+						}else if(line_item=='Day One Edition|'){
 							event.preventDefault();
 							event.stopPropagation();
 							$(target.parentElement.parentElement).find('.qtyblurbtn').css('pointer-events','none');
@@ -1128,8 +1124,11 @@ function shopify_cart_toggle_scripts($atts){
 					beforeInit: function(cart){
 						var actualOpen = cart.checkout.open;
 						cart.checkout.open = function (url) {
-							url = url + "?utm_source=testsource&utm_medium=testmedium&utm_campaign=testcampaign&utm_content=testcontent&utm_term=testterm&ref=testref";
-							actualOpen.call(this, url);
+							//url = url + "?utm_source=testsource&utm_medium=testmedium&utm_campaign=testcampaign&utm_content=testcontent&utm_term=testterm&ref=testref";
+							//actualOpen.call(this, url);
+							$('#buybutton_checkout_url').attr('href',url);
+							//$('#buybutton_checkout_url').trigger('click');
+							window.location.href=url;
 						};
 					}
 				}
@@ -1177,6 +1176,7 @@ function shopify_cart_toggle_scripts($atts){
 				ui.createComponent('cart', {
 					toggles: [{node: document.getElementById('toggle_shopify_cart')}],
 					options: product_options,
+					moneyFormat: '€ {{amount}} ',
 				});
 				
 		
