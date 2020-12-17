@@ -1120,21 +1120,28 @@ function shopify_cart_toggle_scripts($atts){
 								}, 2000);
 					}
 				},
-				events: {
+				events: { 
 					beforeInit: function(cart){
 						var actualOpen = cart.checkout.open;
 						cart.checkout.open = function (url) {
-							//url = url + "?utm_source=testsource&utm_medium=testmedium&utm_campaign=testcampaign&utm_content=testcontent&utm_term=testterm&ref=testref";
-							//actualOpen.call(this, url);
-							$('#buybutton_checkout_url').attr('href',url);
-							//$('#buybutton_checkout_url').trigger('click');
-							window.location.href=url;
+							console.log('url: '+url);
+							const str_loc = url.indexOf("?");
+							const str_parameters = url.substr(str_loc);
+							const url_without_parameters = url.replace(str_parameters,'');
+
+							const new_url = url_without_parameters + "?channel=buy_button&" + str_parameters.substr(1);
+
+							console.log('new_url:'+new_url);
+							actualOpen.call(this, new_url);
+							$('#buybutton_checkout_url').attr('href',new_url);
+							$('#buybutton_checkout_url').trigger('click');
+							//window.location.href=url;
 						};
 					}
 				}
 	
 				
-			}, // END Cart
+			}, // END Cart 
 		
 				lineItem:{
 					iframe:false,
