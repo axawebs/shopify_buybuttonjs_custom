@@ -1128,14 +1128,47 @@ function shopify_cart_toggle_scripts($atts){
 							const str_loc = url.indexOf("?");
 							const str_parameters = url.substr(str_loc);
 							const url_without_parameters = url.replace(str_parameters,'');
+							
+							//Getting UTM parameters passed with the url
+							const url_string = window.location.href; 
+							let parameters_url = new URL(url_string);
+							
+							 const utm_medium = parameters_url.searchParams.get("utm_medium");
+							 const utm_source = parameters_url.searchParams.get("utm_source");
+							 const utm_campaign = parameters_url.searchParams.get("utm_campaign");
+							 const utm_content = parameters_url.searchParams.get("utm_content");
+							 const utm_term = parameters_url.searchParams.get("utm_term");
+							 const ref = parameters_url.searchParams.get("ref");
+							
+							let utm_parameters = '';
+							if (typeof utm_medium != 'undefined' && !!utm_medium ){
+								utm_parameters += "&utm_medium="+utm_medium;
+							}
+							if (typeof utm_source != 'undefined' && !!utm_source ){
+								utm_parameters += "&utm_source="+utm_source;
+							}
+							if (typeof utm_campaign != 'undefined' && !!utm_campaign ){
+								utm_parameters += "&utm_campaign="+utm_campaign;
+							}
+							if (typeof utm_content != 'undefined' && !!utm_content ){
+								utm_parameters += "&utm_content="+utm_content;
+							}
+							if (typeof utm_term != 'undefined' && !!utm_term ){
+								utm_parameters += "&utm_term="+utm_term;
+							}
+							if (typeof ref != 'undefined' && !!ref ){
+								utm_parameters += "&ref="+ref;
+							}
+							
 
-							const new_url = url_without_parameters + "?channel=buy_button&" + str_parameters.substr(1);
+
+							const new_url = url_without_parameters + "?channel=buy_button" + utm_parameters + "&" + str_parameters.substr(1);
 
 							console.log('new_url:'+new_url);
 							actualOpen.call(this, new_url);
 							$('#buybutton_checkout_url').attr('href',new_url);
-							$('#buybutton_checkout_url').trigger('click');
-							//window.location.href=url;
+							//$('#buybutton_checkout_url').trigger('click');
+							window.location.href=new_url;
 						};
 					}
 				}
