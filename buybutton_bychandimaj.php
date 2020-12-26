@@ -72,7 +72,7 @@ function shopify_button_scripts($atts){
 			if(letter_product_index==999){
 				setTimeout(function(){ 
 					$('#product_div_placeholder2 .shopify-buy__btn').unbind('click').trigger('click');
-				 }, 4000);
+				 }, 1000);
 				
 			}
 
@@ -1064,6 +1064,7 @@ function shopify_cart_toggle_scripts($atts){
 
 							if(typeof parseInt(ui.components.cart[0].lineItemCache[standard_id].quantity) == 'undefined' || parseInt(ui.components.cart[0].lineItemCache[standard_id].quantity)<=0){
 								console.log('standard qty is 0');
+								$('.shopify-buy__cart-item').eq(1).css('display','none');
 								ui.closeCart();
 								setTimeout(function() {
 									ui.openCart();
