@@ -58,7 +58,7 @@ function shopify_button_scripts($atts){
 		 * */
 	(function($) { // jQuery  
 		function add_letter_product(ui){
-
+/*
 			console.log('Adding letter product to cart...');
 			let letter_product_index = 999;
 			for (i=0; i<ui.components.cart[0].lineItemCache.length; i++){
@@ -75,7 +75,7 @@ function shopify_button_scripts($atts){
 				 }, 1000);
 				
 			}
-
+*/
 
 		}
 
@@ -904,7 +904,7 @@ function shopify_cart_toggle_scripts($atts){
 						  <span class="{{data.classes.cart.discountAmount}}" data-element="cart.discountAmount">{{amount}}</span>
 						</div>
 					  {{/data.discounts}}
-					  <p class="{{data.classes.cart.subtotalText}}" data-element="cart.total">{{data.text.total}}</p>
+					  <p class="{{data.classes.cart.subtotalText}}" data-element="cart.total">ZWISCHENSUMME</p>
 					  <p class="{{data.classes.cart.subtotal}}" data-element="cart.subtotal">{{data.formattedTotal}}</p>
 					  {{#data.contents.note}}
 						<div class="{{data.classes.cart.note}}" data-element="cart.note">
@@ -992,6 +992,15 @@ function shopify_cart_toggle_scripts($atts){
 	'border-width': '0 0 0 1px',
 	'border-style': 'solid',
 	'border-image': 'linear-gradient(0deg, transparent 10%, #33A9FD 50%, transparent 90%) 15',
+				},
+				text : {
+				title: 'Warenkorb',
+				empty: 'Dein Warenkorb ist leer.',
+				//button: 'Checkout',
+				//total: 'Total',
+				//currency: 'CAD',
+				notice: 'Rabattcodes können im Checkout eingegeben werden.',
+				//noteDescription: 'Special instructions for seller',
 				},
 				DOMEvents:{
 					'click .lineitm_val_increment':function(event,target){
