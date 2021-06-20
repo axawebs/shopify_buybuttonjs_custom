@@ -1,6 +1,8 @@
 # Shopify buybutton.js Integration on wordpress website
 by Chandima Jayasiri (chandimaj@icloud.com)
 <br>
+A wordpress plugin to use advanced features from shopify without the direct shopify api connection, but with the buybuttonjs scripts. The plugin unlocks most of the features in addition to the general functions provided by the buybutton.js.
+
 <br>
 
 ## Installation
